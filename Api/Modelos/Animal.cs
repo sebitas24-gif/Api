@@ -6,7 +6,7 @@ namespace Api.Modelos
     {
         [Key] public int Id { get; set; }
         public string Nombres { get; set; } = string.Empty;
-        public int Edad { get; set; }
+        public int Edad { get; set; }  
         public string Genero { get; set; } = string.Empty;
 
         // FK
