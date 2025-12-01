@@ -127,7 +127,7 @@ namespace Api.Controllers
             }
             catch (Exception ex)
             {
-                return ApirResult<Raza>.Fail(ex.Message);
+                return ApirResult<Raza>.Fail(ex.Message); 
             }
         }
 
