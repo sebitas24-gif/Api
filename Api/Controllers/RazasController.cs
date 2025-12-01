@@ -121,8 +121,8 @@ namespace Api.Controllers
                 }
 
                 _context.Razas.Remove(raza);
-                await _context.SaveChangesAsync();
-
+                await _context.SaveChangesAsync();  
+                  
                 return ApirResult<Raza>.Ok(null);
             }
             catch (Exception ex)

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Api.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    [Migration("20251201194853_nueva")]
-    partial class nueva
+    [Migration("20251201202247_Migra")]
+    partial class Migra
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
