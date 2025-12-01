@@ -19,6 +19,12 @@ namespace Api
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+            builder.Services.AddControllers().AddNewtonsoftJson(
+                options =>
+                options.SerializerSettings.ReferenceLoopHandling
+                = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
+
 
             // Configure the HTTP request pipeline.
             //if (app.Environment.IsDevelopment())

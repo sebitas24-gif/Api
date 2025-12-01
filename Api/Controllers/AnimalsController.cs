@@ -22,33 +22,53 @@ namespace Api.Controllers
 
         // GET: api/Animals
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Animal>>> GetAnimal()
+        public async Task<ActionResult<ApirResult<List<Animal>>>> GetAnimal()
         {
-            return await _context.Animals.ToListAsync();
+            try
+            {
+                return ApirResult<List<Animal>>.Ok(await _context.Animals.ToListAsync());
+            }
+            catch (Exception ex)
+            {
+                return ApirResult<List<Animal>>.Fail(ex.Message);
+            }
         }
 
         // GET: api/Animals/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Animal>> GetAnimal(int id)
+        public async Task<ActionResult<ApirResult<Animal>>> GetAnimal(int id)
         {
-            var animal = await _context.Animals.FindAsync(id);
-
-            if (animal == null)
+            try
             {
-                return NotFound();
-            }
 
-            return animal;
+                var animal = await _context.Animals
+                    .Include(a => a.Especie)
+                    .Include(a => a.Raza)
+                    .FirstOrDefaultAsync(a => a.Id == id);
+
+
+                if (animal == null)
+                {
+                    return ApirResult<Animal>.Fail("Datos no encontrados");
+                }
+
+                return ApirResult<Animal>.Ok(animal);
+            }
+            catch (Exception ex)
+            {
+                return ApirResult<Animal>.Fail(ex.Message);
+            }
         }
 
         // PUT: api/Animals/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAnimal(int id, Animal animal)
+        public async Task<ActionResult<ApirResult<Animal>>> PutAnimal(int id, Animal animal)
         {
+
             if (id != animal.Id)
             {
-                return BadRequest();
+                return ApirResult<Animal>.Fail("ID no coincide");
             }
 
             _context.Entry(animal).State = EntityState.Modified;
@@ -57,51 +77,69 @@ namespace Api.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException ex)
             {
-                if (!AnimalExists(id))
+                if (!await AnimalExists(id))
                 {
-                    return NotFound();
+                    return ApirResult<Animal>.Fail("Datos no encontrados");
                 }
                 else
                 {
-                    throw;
+                    return ApirResult<Animal>.Fail(ex.Message);
                 }
             }
 
-            return NoContent();
-        }
 
+            return ApirResult<Animal>.Ok(animal);
+
+
+
+        }
         // POST: api/Animals
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Animal>> PostAnimal(Animal animal)
+        public async Task<ActionResult<ApirResult<Animal>>> PostAnimal(Animal animal)
         {
-            _context.Animals.Add(animal);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Animals.Add(animal);
+                await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetAnimal", new { id = animal.Id }, animal);
+                return ApirResult<Animal>.Ok(animal);
+            }
+            catch (Exception ex)
+            {
+                return ApirResult<Animal>.Fail(ex.Message);
+            }
         }
 
         // DELETE: api/Animals/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAnimal(int id)
+        public async Task<ActionResult<ApirResult<Animal>>> DeleteAnimal(int id)
         {
-            var animal = await _context.Animals.FindAsync(id);
-            if (animal == null)
+            try
             {
-                return NotFound();
+
+
+                var animal = await _context.Animals.FindAsync(id);
+                if (animal == null)
+                {
+                    return ApirResult<Animal>.Fail("Datos no encontrados");
+                }
+
+                _context.Animals.Remove(animal);
+                await _context.SaveChangesAsync();
+                return ApirResult<Animal>.Ok(animal);
+            }
+            catch (Exception ex)
+            {
+                return ApirResult<Animal>.Fail(ex.Message);
             }
 
-            _context.Animals.Remove(animal);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
         }
-
-        private bool AnimalExists(int id)
+        private async Task<bool> AnimalExists(int id)
         {
-            return _context.Animals.Any(e => e.Id == id);
+            return await _context.Animals.AnyAsync(e => e.Id == id);
         }
     }
 }
