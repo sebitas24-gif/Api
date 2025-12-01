@@ -23,7 +23,7 @@ namespace Api.Migrations
                     table.PrimaryKey("PK_Especies", x => x.Codigo);
                 });
 
-            migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable( 
                 name: "Razas",
                 columns: table => new
                 {
