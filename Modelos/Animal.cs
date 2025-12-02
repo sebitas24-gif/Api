@@ -1,12 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Api.Modelos
+namespace Modelos
 {
     public class Animal
     {
         [Key] public int Id { get; set; }
         public string Nombres { get; set; } = string.Empty;
-        public int Edad { get; set; }  
+        public int Edad { get; set; }
         public string Genero { get; set; } = string.Empty;
 
         // FK
