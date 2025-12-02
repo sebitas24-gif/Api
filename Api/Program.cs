@@ -9,7 +9,7 @@ namespace Api
         {
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddDbContext<ApiContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("ApiContext") ?? throw new InvalidOperationException("Connection string 'ApiContext' not found.")));
+                options.UseNpgsql(builder.Configuration.GetConnectionString("ApiContext") ?? throw new InvalidOperationException("Connection string 'ApiContext' not found.")));
 
             // Add services to the container.
 
